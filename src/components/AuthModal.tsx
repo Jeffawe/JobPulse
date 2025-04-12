@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAuth } from './context/AuthContext';
 import { toast } from "sonner"
 
@@ -8,18 +8,16 @@ interface AuthModalProps {
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, setisOpen }) => {
-    const [isModalOpen, setIsModalOpen] = useState(isOpen);
-
     const { googleLogin } = useAuth();
 
     const handleGoogleSignIn = async () => {
         try {
-            const auth = await google.accounts.oauth2.initCodeClient({
+            const auth = google.accounts.oauth2.initCodeClient({
                 client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
                 scope: 'email profile https://www.googleapis.com/auth/gmail.readonly',
                 ux_mode: 'popup',
                 // Request refresh token by including access_type and prompt parameters
-                callback: async (response:any) => {
+                callback: async (response: any) => {
                     try {
                         if (response.code) {
                             // Send authorization code to backend instead of access token
@@ -45,15 +43,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, setisOpen }) => {
 
     const closeModal = () => {
         setisOpen(false);
-        setIsModalOpen(false);
     }
 
     return (
         <div className="w-full max-w-md mx-auto">
 
             {/* Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+            {isOpen && (
+                <div className="fixed inset-0 bg-white/10 backdrop-blur-sm flex items-center justify-center p-4">
                     <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative">
                         {/* Close button */}
                         <button

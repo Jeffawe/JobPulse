@@ -1,32 +1,69 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './Navbar.css';
 import { useAuth } from './context/AuthContext';
+import AuthModal from './AuthModal';
+import { Menu, X } from 'lucide-react'; // You can use any icon library you prefer
 
-const Navbar : React.FC = () => {
+const Navbar: React.FC = () => {
     const { isAuthenticated, logout } = useAuth();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+    const toggleMenu = () => setMenuOpen(prev => !prev);
 
     return (
-        <nav className="navbar">
-            <div className="navbar-brand">
-                <Link to="/">JobTrackr</Link>
+        <nav className="bg-white shadow-md px-6 py-4">
+            <div className="max-w-7xl mx-auto flex items-center justify-between">
+                {/* Logo */}
+                <div className="text-2xl font-bold text-blue-600">
+                    <Link to="/">JobPulse</Link>
+                </div>
+
+                {/* Hamburger Icon */}
+                <div className="md:hidden">
+                    <button onClick={toggleMenu}>
+                        {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                    </button>
+                </div>
+
+                {/* Nav Links */}
+                <div className={`flex-col md:flex-row md:flex items-center gap-4 absolute md:static bg-white left-0 w-full md:w-auto md:bg-transparent px-6 md:px-0 py-4 md:py-0 shadow-md md:shadow-none z-50 transition-all duration-300 ease-in-out ${menuOpen ? 'top-16' : 'top-[-500px]'}`}>
+                    {isAuthenticated ? (
+                        <>
+                            <Link to="/dashboard" className="text-gray-700 hover:text-blue-600">
+                                Dashboard
+                            </Link>
+                            <Link to="/settings" className="text-gray-700 hover:text-blue-600">
+                                Settings
+                            </Link>
+                            <button
+                                onClick={logout}
+                                className="text-red-500 hover:text-red-700 font-medium"
+                            >
+                                Logout
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <button onClick={openModal} className="text-gray-700 hover:text-blue-600">
+                                Login
+                            </button>
+                            <button
+                                onClick={openModal}
+                                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                            >
+                                Sign Up
+                            </button>
+                        </>
+                    )}
+                </div>
             </div>
-            <div className="navbar-menu">
-                {isAuthenticated ? (
-                    <>
-                        <Link to="/dashboard" className="navbar-item">Dashboard</Link>
-                        <Link to="/settings" className="navbar-item">Settings</Link>
-                        <button onClick={logout} className="btn-logout">Logout</button>
-                    </>
-                ) : (
-                    <div className="auth-buttons">
-                        <button className="btn-login">Login</button>
-                        <button className="btn-signup">Sign Up</button>
-                    </div>
-                )}
-            </div>
+
+            {/* Auth Modal */}
+            <AuthModal isOpen={isModalOpen} setisOpen={setIsModalOpen} />
         </nav>
     );
-}
+};
 
 export default Navbar;

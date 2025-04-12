@@ -13,30 +13,34 @@ import NotificationSettings from './components/Settings/NotificationSettings';
 import DiscordWebhook from './components/Settings/DiscordWebhook';
 
 const App: React.FC = () => {
-  const { isAuthenticated } = useAuth();
-
   return (
     <AuthProvider>
       <Router>
-        <div className="app">
-          <Navbar />
-          <main className="main-content">
-            <Routes>
-              <Route path="/" element={!isAuthenticated ? <LandingPage /> : <Navigate to="/dashboard" />} />
-              <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />} />
-              <Route path="/settings" element={<ProtectedRoute> <SettingsLayout /> </ProtectedRoute>}>
-                <Route path="profile" element={<ProtectedRoute> <ProfileSettings /> </ProtectedRoute>} />
-                <Route path="notifications" element={<ProtectedRoute> <NotificationSettings /> </ProtectedRoute>} />
-                <Route path="help" element={<ProtectedRoute> <HelpSupport /> </ProtectedRoute>} />
-                <Route path="discord" element={<ProtectedRoute> <DiscordWebhook /> </ProtectedRoute>} />
-              </Route>
-            </Routes>
-          </main>
-          <Toaster richColors position="top-right" />
-        </div>
+        <AppContent />
       </Router>
     </AuthProvider>
   );
 }
+
+const AppContent: React.FC = () => {
+  const { isAuthenticated } = useAuth();
+
+  return (
+    <div className='bg-gradient-to-br from-gray-100 to-gray-200'>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={!isAuthenticated ? <LandingPage /> : <Navigate to="/dashboard" />} />
+        <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />} />
+        <Route path="/settings" element={<ProtectedRoute> <SettingsLayout /> </ProtectedRoute>}>
+          <Route path="profile" element={<ProtectedRoute> <ProfileSettings /> </ProtectedRoute>} />
+          <Route path="notifications" element={<ProtectedRoute> <NotificationSettings /> </ProtectedRoute>} />
+          <Route path="help" element={<ProtectedRoute> <HelpSupport /> </ProtectedRoute>} />
+          <Route path="discord" element={<ProtectedRoute> <DiscordWebhook /> </ProtectedRoute>} />
+        </Route>
+      </Routes>
+      <Toaster richColors position="top-right" />
+    </div>
+  );
+};
 
 export default App;
