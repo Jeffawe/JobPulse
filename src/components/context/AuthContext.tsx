@@ -54,8 +54,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error(error.message);
       }
 
-      const { token: jwtToken, user } = await response.json();
+      const { token: jwtToken, user, firstTime } = await response.json();
       localStorage.setItem('token', jwtToken);
+      if (jwtToken && firstTime) {
+        const response = await fetch(`${API_BASE_URL}/job/setup-gmail-push`, {
+          headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'api-key': API_KEY
+          }
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message);
+        }
+      }
       setUser(user);
       setIsAuthenticated(true);
     } catch (error) {
@@ -77,13 +90,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      isAuthenticated, 
-      isLoading, 
+    <AuthContext.Provider value={{
+      user,
+      isAuthenticated,
+      isLoading,
       setUser,
-      googleLogin, 
-      logout 
+      googleLogin,
+      logout
     }}>
       {children}
     </AuthContext.Provider>
