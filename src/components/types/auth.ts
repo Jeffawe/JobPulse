@@ -1,10 +1,12 @@
 export interface User {
-    _id: string;
+    id: number;
     name: string;
     email: string;
     discord_webhook: string;
     notification_channel?: string;
     notification_value: string;
+    notification_status?: string;
+    email_addresses?: string;
 }
 
 export interface AuthContextType {
@@ -14,4 +16,18 @@ export interface AuthContextType {
     setUser: (data: User | null) => void;
     googleLogin: (token: string) => Promise<void>;
     logout: () => Promise<void>;
-  }
+}
+
+export enum NotificationChannel {
+    WHATSAPP = 'WhatsApp',
+    SMS = 'SMS',
+    EMAIL = 'Email',
+}
+
+export enum NotificationStatus {
+    APPLIED = 'Applied',
+    INTERVIEW_SCHEDULED = 'Interview Scheduled',
+    OFFER = 'Offer',
+    REJECTED = 'Rejected',
+    ALL = 'All',
+}

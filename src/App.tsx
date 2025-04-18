@@ -11,6 +11,7 @@ import HelpSupport from './components/Settings/HelpAndOptions';
 import ProfileSettings from './components/Settings/Profile';
 import NotificationSettings from './components/Settings/NotificationSettings';
 import DiscordWebhook from './components/Settings/DiscordWebhook';
+import DeleteAccount from './components/Settings/DeleteAccount';
 
 const App: React.FC = () => {
   return (
@@ -36,9 +37,10 @@ const AppContent: React.FC = () => {
           <Route path="notifications" element={<ProtectedRoute> <NotificationSettings /> </ProtectedRoute>} />
           <Route path="help" element={<ProtectedRoute> <HelpSupport /> </ProtectedRoute>} />
           <Route path="discord" element={<ProtectedRoute> <DiscordWebhook /> </ProtectedRoute>} />
+          <Route path="delete" element={<ProtectedRoute> <DeleteAccount /> </ProtectedRoute>} />
         </Route>
       </Routes>
-      <Toaster richColors position="top-right" />
+      <Toaster richColors className='text-blue-600' position="top-right" />
     </div>
   );
 };

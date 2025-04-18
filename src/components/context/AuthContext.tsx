@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, AuthContextType } from '../types/auth';
+import axios from 'axios';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -16,22 +17,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         const token = localStorage.getItem('token');
         if (token) {
-          const response = await fetch(`${API_BASE_URL}/auth/verify`, {
+          const response = await axios.get(`${API_BASE_URL}/auth/verify`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'api-key': API_KEY
             }
           });
-          if (response.ok) {
-            const userData = await response.json();
-            setUser(userData);
-            setIsAuthenticated(true);
-          } else {
-            localStorage.removeItem('token');
-          }
+
+          const userData = response.data;
+          setUser(userData);
+          setIsAuthenticated(true);
+        } else {
+          localStorage.removeItem('token');
         }
       } catch (error) {
         console.error('Auth check failed:', error);
+        localStorage.removeItem('token');
       } finally {
         setIsLoading(false);
       }

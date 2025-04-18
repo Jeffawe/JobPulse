@@ -5,7 +5,6 @@ const LandingPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
-    console.log("open modal");
     setIsModalOpen(true);
   };
 
@@ -16,7 +15,7 @@ const LandingPage: React.FC = () => {
           Track Your Job Applications Effortlessly
         </h1>
         <p className="text-gray-600 text-lg mb-8">
-          JobPulse automatically scans your emails to organize and track all your job applications in one place.
+          JobPulse automatically scans your emails to organize and track all your job applications in a heartbeat.
           Never miss an interview or lose track of your applications again.
         </p>
 

@@ -2,10 +2,11 @@ import React, { useEffect } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import {
-  Shield,
   User,
-  HelpCircle,
-  ChefHat
+  Bell,
+  Webhook,
+  Trash2,
+  LifeBuoy
 } from 'lucide-react';
 
 const SettingsLayout: React.FC = () => {
@@ -22,31 +23,37 @@ const SettingsLayout: React.FC = () => {
     {
       name: 'Notification Settings',
       path: '/settings/notifications',
-      icon: ChefHat,
+      icon: Bell,
       description: 'Set your notification settings'
     },
     {
       name: 'Discord Webhook',
       path: '/settings/discord',
-      icon: Shield,
+      icon: Webhook,
       description: 'Setup your Discord webhook'
     },
     {
       name: 'Help & Support',
       path: '/settings/help',
-      icon: HelpCircle,
+      icon: LifeBuoy,
       description: 'Get help and contact support'
-    }
+    },
+    {
+      name: 'Delete Account',
+      path: '/settings/delete',
+      icon: Trash2,
+      description: 'Delete your account'
+    },
   ];
 
   useEffect(() => {
     if (location.pathname === '/settings') {
-      navigate('/settings/account');
+      navigate('/settings/profile');
     }
   }, [location.pathname, navigate]);
 
   return (
-    <div className="mx-auto px-4 py-8 bg-gradient-to-br from-orange-50 to-white">
+    <div className="mx-auto min-h-screen px-4 py-8 bg-gradient-to-br from-blue-50 to-white">
       <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar Navigation */}
         <aside className="w-full md:w-64 flex-shrink-0">
@@ -63,8 +70,8 @@ const SettingsLayout: React.FC = () => {
                     flex items-center space-x-3 px-4 py-3 rounded-lg
                     transition-colors duration-200
                     ${isActive 
-                      ? 'bg-orange-50 text-orange-600' 
-                      : 'hover:bg-gray-50 text-gray-700'
+                      ? 'bg-blue-200 text-blue-600' 
+                      : 'hover:bg-blue-100 text-gray-700'
                     }
                   `}
                 >

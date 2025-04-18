@@ -10,19 +10,32 @@ interface AuthModalProps {
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, setisOpen }) => {
     const { googleLogin } = useAuth();
 
+    /**
+     * Handles the Google sign-in process.
+     *
+     * Requests authorization code instead of access token by including
+     * access_type and prompt parameters. Then, sends authorization code to
+     * backend to exchange for access token.
+     */
     const handleGoogleSignIn = async () => {
         try {
             const auth = google.accounts.oauth2.initCodeClient({
+                // Client ID from Google Cloud Console
                 client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+                // Scopes to request from user
                 scope: 'email profile https://www.googleapis.com/auth/gmail.readonly',
+                // Display authorization code request as a popup
                 ux_mode: 'popup',
-                // Request refresh token by including access_type and prompt parameters
+                // Redirect URI to send authorization code to
+                redirect_uri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
+                // Callback to handle authorization code
                 callback: async (response: any) => {
                     try {
                         if (response.code) {
                             // Send authorization code to backend instead of access token
                             await googleLogin(response.code);
                             toast.success("Welcome!", { duration: 3000 });
+                            setisOpen(false);
                         } else {
                             throw new Error("Authorization code not received");
                         }
