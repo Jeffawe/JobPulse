@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useAuth } from './context/AuthContext';
 import NoDiscordWebhook from './Settings/NoDiscordWebhook';
-import { NotificationStatus } from './types/auth';
+import { NotificationStatus, User } from './types/auth';
+import { Filter } from 'lucide-react';
+import axios from 'axios';
+import { toast } from "sonner";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
@@ -61,7 +64,7 @@ const Dashboard: React.FC = () => {
     }
   ]);
 
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
 
   // useEffect(() => {
   //   // Initial fetch of emails
@@ -106,6 +109,27 @@ const Dashboard: React.FC = () => {
     alert('Scanning emails for new job applications...');
   };
 
+  const handleFilterCreation = async () => {
+    try {
+      const response = await axios.post<User>(
+        `${API_BASE_URL}/auth/create-filter`,
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'api-key': API_KEY,
+          },
+        }
+      );
+
+      setUser(response.data)
+      toast.success("Filter created", { duration: 4000 });
+    } catch (error) {
+      toast.error("Error creating filter", { duration: 4000 });
+    }
+  };
+
   const getStatusClass = (status: string) => {
     switch (status) {
       case NotificationStatus.APPLIED:
@@ -123,14 +147,25 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="max-w-7xl min-h-screen mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-semibold text-gray-800">Your Job Applications</h1>
-        <button
-          className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow"
-          onClick={handleRescanEmails}
-        >
-          <span className="mr-2">🔄</span> Rescan Emails
-        </button>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-4 sm:mb-0">
+          Your Job Applications
+        </h1>
+        <div className="flex flex-col sm:flex-row gap-2">
+          {user?.label_id == null &&
+            <button
+              className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 text-sm rounded shadow"
+              onClick={handleFilterCreation}
+            >
+              <Filter className="w-4 h-4 mr-2" /> Create Filter
+            </button>}
+          <button
+            className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 text-sm rounded shadow"
+            onClick={handleRescanEmails}
+          >
+            <span className="mr-2">🔄</span> Rescan Emails
+          </button>
+        </div>
       </div>
 
       {user?.discord_webhook === "NULL" && <NoDiscordWebhook />}

@@ -7,6 +7,7 @@ export interface User {
     notification_value: string;
     notification_status?: string;
     email_addresses?: string;
+    label_id?: string;
 }
 
 export interface AuthContextType {

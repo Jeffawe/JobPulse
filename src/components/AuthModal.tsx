@@ -1,6 +1,5 @@
 import React from 'react';
-import { useAuth } from './context/AuthContext';
-import { toast } from "sonner"
+
 
 interface AuthModalProps {
     isOpen: boolean;
@@ -8,50 +7,20 @@ interface AuthModalProps {
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, setisOpen }) => {
-    const { googleLogin } = useAuth();
+    const handleGoogleSignIn = () => {
+        const params = new URLSearchParams({
+            client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+            redirect_uri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
+            response_type: 'code',
+            scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.labels https://www.googleapis.com/auth/gmail.settings.basic https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.labels https://www.googleapis.com/auth/gmail.settings.basic',
+            access_type: 'offline',       // Required for refresh token
+            prompt: 'select_account',            // Forces refresh token every time (only on first time ideally)
+        });
 
-    /**
-     * Handles the Google sign-in process.
-     *
-     * Requests authorization code instead of access token by including
-     * access_type and prompt parameters. Then, sends authorization code to
-     * backend to exchange for access token.
-     */
-    const handleGoogleSignIn = async () => {
-        try {
-            const auth = google.accounts.oauth2.initCodeClient({
-                // Client ID from Google Cloud Console
-                client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-                // Scopes to request from user
-                scope: 'email profile https://www.googleapis.com/auth/gmail.readonly',
-                // Display authorization code request as a popup
-                ux_mode: 'popup',
-                // Redirect URI to send authorization code to
-                redirect_uri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
-                // Callback to handle authorization code
-                callback: async (response: any) => {
-                    try {
-                        if (response.code) {
-                            // Send authorization code to backend instead of access token
-                            await googleLogin(response.code);
-                            toast.success("Welcome!", { duration: 3000 });
-                            setisOpen(false);
-                        } else {
-                            throw new Error("Authorization code not received");
-                        }
-                    } catch (error) {
-                        const errorMessage = "Google sign in failed. Please try again.";
-                        toast.error(errorMessage, { duration: 4000 });
-                    }
-                },
-            });
+        const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
 
-            // Request authorization code - include access_type and prompt
-            auth.requestCode();
-        } catch (error) {
-            //console.error('Google Sign In Error:', error);
-            toast.error("Something went wrong", { duration: 4000 });
-        }
+        // Redirect user to Google consent screen
+        window.location.href = authUrl;
     };
 
     const closeModal = () => {

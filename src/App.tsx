@@ -12,6 +12,7 @@ import ProfileSettings from './components/Settings/Profile';
 import NotificationSettings from './components/Settings/NotificationSettings';
 import DiscordWebhook from './components/Settings/DiscordWebhook';
 import DeleteAccount from './components/Settings/DeleteAccount';
+import OAuthCallback from './components/OAuthCallback';
 
 const App: React.FC = () => {
   return (
@@ -32,6 +33,7 @@ const AppContent: React.FC = () => {
       <Routes>
         <Route path="/" element={!isAuthenticated ? <LandingPage /> : <Navigate to="/dashboard" />} />
         <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />} />
+        <Route path="/googleAuth" element={<OAuthCallback />} />
         <Route path="/settings" element={<ProtectedRoute> <SettingsLayout /> </ProtectedRoute>}>
           <Route path="profile" element={<ProtectedRoute> <ProfileSettings /> </ProtectedRoute>} />
           <Route path="notifications" element={<ProtectedRoute> <NotificationSettings /> </ProtectedRoute>} />
