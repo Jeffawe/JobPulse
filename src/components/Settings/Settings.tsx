@@ -27,10 +27,10 @@ const SettingsLayout: React.FC = () => {
       description: 'Set your notification settings'
     },
     {
-      name: 'Discord Webhook',
+      name: 'Discord Integration',
       path: '/settings/discord',
       icon: Webhook,
-      description: 'Setup your Discord webhook'
+      description: 'Integrate with Discord'
     },
     {
       name: 'Help & Support',

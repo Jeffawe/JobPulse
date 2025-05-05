@@ -10,6 +10,28 @@ export interface User {
     label_id?: string;
 }
 
+export interface JobApplication {
+    id: number;
+    company: string;
+    position: string;
+    link: string;
+    status: string;
+    location: string;
+    date: Date;
+}
+
+export interface EmailData {
+    id: number;
+    company_name: string;
+    job_title: string;
+    job_link: string;
+    jobStatus: string;
+    location: string;
+    salary: string;
+    date: string;
+    metadata: any;
+}
+
 export interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
@@ -27,6 +49,8 @@ export enum NotificationChannel {
 
 export enum NotificationStatus {
     APPLIED = 'Applied',
+    ASSESSMENT = 'Assessment',
+    INTERVIEW_COMPLETE = 'Interview Complete',
     INTERVIEW_SCHEDULED = 'Interview Scheduled',
     OFFER = 'Offer',
     REJECTED = 'Rejected',
