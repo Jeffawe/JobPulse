@@ -24,12 +24,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { 
-  Trash2, 
-  AlertTriangle, 
-  ExternalLink, 
-  Shield, 
-  KeyRound, 
+import {
+  Trash2,
+  AlertTriangle,
+  ExternalLink,
+  Shield,
+  KeyRound,
   XCircle,
   CheckCircle,
   ArrowRightCircle
@@ -38,7 +38,7 @@ import {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
-const DeleteAccount : React.FC= () => {
+const DeleteAccount: React.FC = () => {
   const { user, logout } = useAuth();
   const [isDeleting, setIsDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState('');
@@ -52,16 +52,23 @@ const DeleteAccount : React.FC= () => {
 
     setIsDeleting(true);
     try {
-      await axios.delete(`${API_BASE_URL}/auth/delete/${user?.id}`, {
+      const response = await axios.delete(`${API_BASE_URL}/auth/delete/${user?.id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'api-key': API_KEY,
         },
       });
-      
+
+      if (!response.data.revokeAcess) {
+        toast.error("There was an error revoking access to your account. Redirecting to where you can do it manually");
+
+        setTimeout(() => {
+          window.location.href = "https://myaccount.google.com/permissions";
+        }, 5000); // 3-second delay
+      }
+
       toast.success("Account successfully deleted");
       logout();
-      // Redirect to homepage or login page
       window.location.href = "/";
     } catch (error: any) {
       const msg = error.response?.data?.message || "Failed to delete account";
@@ -101,12 +108,12 @@ const DeleteAccount : React.FC= () => {
               <p className="text-amber-700 mb-4">
                 Make sure you've completed these important steps:
               </p>
-              
+
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5">
-                    {checkedAccess ? 
-                      <CheckCircle className="h-5 w-5 text-green-500" /> : 
+                    {checkedAccess ?
+                      <CheckCircle className="h-5 w-5 text-green-500" /> :
                       <XCircle className="h-5 w-5 text-red-400" />
                     }
                   </div>
@@ -115,9 +122,9 @@ const DeleteAccount : React.FC= () => {
                     <p className="text-sm text-gray-600 mb-2">
                       We use Google OAuth for authentication. We will deal with revoking access but feel free to check to ensure.
                     </p>
-                    <a 
-                      href="https://myaccount.google.com/permissions" 
-                      target="_blank" 
+                    <a
+                      href="https://myaccount.google.com/permissions"
+                      target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setCheckedAccess(true)}
                       className="text-blue-600 hover:text-blue-800 flex items-center gap-1 text-sm font-medium"
@@ -163,8 +170,8 @@ const DeleteAccount : React.FC= () => {
 
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button 
-                    variant="destructive" 
+                  <Button
+                    variant="destructive"
                     className="mt-4 bg-red-600 hover:bg-red-700 text-white flex items-center gap-2"
                     disabled={confirmDelete !== user?.email}
                   >
@@ -185,7 +192,7 @@ const DeleteAccount : React.FC= () => {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel className="border-gray-300">Cancel</AlertDialogCancel>
-                    <AlertDialogAction 
+                    <AlertDialogAction
                       onClick={handleDeleteAccount}
                       className="bg-red-600 hover:bg-red-700 text-white"
                       disabled={isDeleting}
