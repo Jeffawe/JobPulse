@@ -8,6 +8,7 @@ export interface User {
     notification_status?: string;
     email_addresses?: string;
     label_id?: string;
+    isTestUser?: boolean;
 }
 
 export interface JobApplication {
@@ -37,7 +38,7 @@ export interface AuthContextType {
     isAuthenticated: boolean;
     isLoading: boolean;
     setUser: (data: User | null) => void;
-    googleLogin: (token: string) => Promise<void>;
+    googleLogin: (token: string, isTestUser: boolean) => Promise<void>;
     logout: () => Promise<void>;
 }
 

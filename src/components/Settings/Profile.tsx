@@ -120,7 +120,7 @@ const ProfileSettings = () => {
                 <Input
                   id="email"
                   value={user?.email || ''}
-                  disabled
+                  disabled={true}
                   className="pl-10 bg-gray-50 border-gray-200 text-gray-500"
                 />
                 <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -143,6 +143,7 @@ const ProfileSettings = () => {
                   placeholder="Your display name"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
+                  disabled={user?.isTestUser}
                   className="pl-10 border border-blue-200 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                 />
                 <UserCircle className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -168,6 +169,7 @@ const ProfileSettings = () => {
                     id="discord-webhook"
                     placeholder="https://discord.com/api/webhooks/..."
                     value={discordWebhook}
+                    disabled={user?.isTestUser}
                     onChange={(e) => setDiscordWebhook(e.target.value)}
                     className="pl-10 border border-blue-200 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                   />

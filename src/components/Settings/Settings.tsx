@@ -6,12 +6,18 @@ import {
   Bell,
   Webhook,
   Trash2,
-  LifeBuoy
+  LifeBuoy,
+  Hammer 
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const SettingsLayout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const { user } = useAuth();
+  
+  const isTestUser = user?.isTestUser || false;
   
   const navigationItems = [
     {
@@ -43,8 +49,17 @@ const SettingsLayout: React.FC = () => {
       path: '/settings/delete',
       icon: Trash2,
       description: 'Delete your account'
-    },
+    }
   ];
+  
+  if (isTestUser) {
+    navigationItems.push({
+      name: 'Test Account Settings',
+      path: '/settings/test',
+      icon: Hammer,
+      description: 'Change and check your test account settings'
+    });
+  }
 
   useEffect(() => {
     if (location.pathname === '/settings') {

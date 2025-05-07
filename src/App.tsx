@@ -13,6 +13,7 @@ import NotificationSettings from './components/Settings/NotificationSettings';
 import DiscordWebhook from './components/Settings/DiscordWebhook';
 import DeleteAccount from './components/Settings/DeleteAccount';
 import OAuthCallback from './components/OAuthCallback';
+import TestAccountSettings from './components/Settings/TestAccountSettings';
 
 const App: React.FC = () => {
   return (
@@ -40,6 +41,7 @@ const AppContent: React.FC = () => {
           <Route path="help" element={<ProtectedRoute> <HelpSupport /> </ProtectedRoute>} />
           <Route path="discord" element={<ProtectedRoute> <DiscordWebhook /> </ProtectedRoute>} />
           <Route path="delete" element={<ProtectedRoute> <DeleteAccount /> </ProtectedRoute>} />
+          <Route path="test" element={<ProtectedRoute> <TestAccountSettings /> </ProtectedRoute>} />
         </Route>
       </Routes>
       <Toaster richColors className='text-blue-600' position="top-right" />

@@ -41,13 +41,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuth();
   }, []);
 
-  const googleLogin = async (token: string) => {
+  const googleLogin = async (token: string, isTestUser: boolean) => {
     setIsLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/auth/google`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'api-key': API_KEY },
-        body: JSON.stringify({ token }),
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': API_KEY
+        },
+        body: JSON.stringify({
+          token,        // The OAuth token from Google
+          is_test_user: isTestUser  // Boolean flag for test user
+        }),
       });
 
       if (!response.ok) {

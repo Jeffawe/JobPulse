@@ -6,6 +6,7 @@ import { NotificationStatus, User, JobApplication, EmailData } from './types/aut
 import { Filter } from 'lucide-react';
 import axios from 'axios';
 import { toast } from "sonner";
+import TestAccountWarning from './Settings/TestAccountWarning';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
@@ -194,6 +195,8 @@ const Dashboard: React.FC = () => {
       </div>
 
       {user?.discord_webhook === false && <NoDiscordWebhook />}
+
+      {user?.isTestUser === true && <TestAccountWarning />}
 
       {isLoading ? (
         <div className="text-gray-600 text-center bg-gray-100 p-6 rounded shadow pt-5">

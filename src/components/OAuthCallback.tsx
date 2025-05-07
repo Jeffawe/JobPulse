@@ -19,7 +19,7 @@ const OAuthCallback = () => {
 
             if (code) {
                 try {
-                    await googleLogin(code);
+                    await googleLogin(code, false);
                     toast.success('Welcome', { duration: 4000 });
                     navigate('/dashboard');
                 } catch (error) {
