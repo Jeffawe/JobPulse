@@ -2,7 +2,7 @@ export interface User {
     id: number;
     name: string;
     email: string;
-    discord_webhook: string;
+    discord_webhook: boolean;
     notification_channel?: string;
     notification_value: string;
     notification_status?: string;

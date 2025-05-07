@@ -193,7 +193,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {user?.discord_webhook === "NULL" && <NoDiscordWebhook />}
+      {user?.discord_webhook === false && <NoDiscordWebhook />}
 
       {isLoading ? (
         <div className="text-gray-600 text-center bg-gray-100 p-6 rounded shadow pt-5">

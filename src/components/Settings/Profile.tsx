@@ -15,15 +15,16 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import NoDiscordWebhook from '../Settings/NoDiscordWebhook';
-import { 
-  UserCircle, 
-  Mail, 
-  Save, 
-  AtSign, 
-  Webhook, 
-  AlertCircle, 
+import {
+  UserCircle,
+  Mail,
+  Save,
+  AtSign,
+  Webhook,
+  AlertCircle,
   Shield,
-  CheckCircle2
+  CheckCircle2,
+  Check
 } from 'lucide-react';
 
 
@@ -35,14 +36,17 @@ const ProfileSettings = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [displayName, setDisplayName] = useState(user?.name || '');
-  const [discordWebhook, setDiscordWebhook] = useState(user?.discord_webhook || '');
+  const [discordWebhook, setDiscordWebhook] = useState('');
   const [_, setError] = useState('');
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  const [webhookEnabled, setWebhookEnabled] = useState<boolean>(user?.discord_webhook || false);
 
   useEffect(() => {
     if (user) {
       setDisplayName(user.name || '');
-      setDiscordWebhook(user.discord_webhook || '');
+      setDiscordWebhook('');
+      setWebhookEnabled(user.discord_webhook || false);
     }
   }, [user]);
 
@@ -72,7 +76,7 @@ const ProfileSettings = () => {
       setUser(response.data);
       toast.success('Profile updated successfully!');
       setSaveSuccess(true);
-      
+
       // Reset success indicator after 3 seconds
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error: any) {
@@ -152,66 +156,73 @@ const ProfileSettings = () => {
                 <Webhook className="h-4 w-4 text-blue-500" />
                 Discord Webhook
               </Label>
-              <div className="relative">
-                <Input
-                  id="discord-webhook"
-                  placeholder="https://discord.com/api/webhooks/..."
-                  value={discordWebhook}
-                  onChange={(e) => setDiscordWebhook(e.target.value)}
-                  className="pl-10 border border-blue-200 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                />
-                <Webhook className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              </div>
-              <p className="text-xs text-blue-600 ml-1 flex items-center gap-1">
-                <AlertCircle className="h-3 w-3" />
-                Adding a Discord webhook ensures your data isn't stored on our servers
-              </p>
-            </div>
-            
-            {user?.discord_webhook === "NULL" && 
-              <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                <NoDiscordWebhook />
-              </div>
-            }
 
-            <div className="pt-3">
-              <Button 
-                type="submit" 
-                disabled={isSubmitting} 
-                className={`w-fit flex items-center gap-2 transition-all duration-300 ${
-                  saveSuccess 
-                  ? "bg-green-600 hover:bg-green-700" 
+              {webhookEnabled ? (
+                <div className="flex items-center gap-2 text-green-600 text-sm">
+                  <Check className="h-4 w-4" />
+                  Webhook already saved
+                </div>
+              ) : (
+                <div className="relative">
+                  <Input
+                    id="discord-webhook"
+                    placeholder="https://discord.com/api/webhooks/..."
+                    value={discordWebhook}
+                    onChange={(e) => setDiscordWebhook(e.target.value)}
+                    className="pl-10 border border-blue-200 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  />
+                  <Webhook className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                </div>
+              )}
+            <p className="text-xs text-blue-600 ml-1 flex items-center gap-1">
+              <AlertCircle className="h-3 w-3" />
+              Adding a Discord webhook ensures your data isn't stored on our servers
+            </p>
+          </div>
+
+          {user?.discord_webhook === false &&
+            <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+              <NoDiscordWebhook />
+            </div>
+          }
+
+          <div className="pt-3">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className={`w-fit flex items-center gap-2 transition-all duration-300 ${saveSuccess
+                  ? "bg-green-600 hover:bg-green-700"
                   : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
                 } text-white`}
-              >
-                {isSubmitting ? (
-                  <>
-                    <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
-                    Saving...
-                  </>
-                ) : saveSuccess ? (
-                  <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Saved!
-                  </>
-                ) : (
-                  <>
-                    <Save className="h-4 w-4" />
-                    Save Changes
-                  </>
-                )}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-        <CardFooter className="bg-gray-50 text-sm text-gray-500 border-t border-gray-100 flex justify-between items-center">
-          <div className="flex items-center gap-1 text-blue-600 text-xs">
-            <Shield className="h-3 w-3" />
-            Your data is secure
+            >
+              {isSubmitting ? (
+                <>
+                  <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                  Saving...
+                </>
+              ) : saveSuccess ? (
+                <>
+                  <CheckCircle2 className="h-4 w-4" />
+                  Saved!
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4" />
+                  Save Changes
+                </>
+              )}
+            </Button>
           </div>
-        </CardFooter>
-      </Card>
-    </div>
+        </form>
+      </CardContent>
+      <CardFooter className="bg-gray-50 text-sm text-gray-500 border-t border-gray-100 flex justify-between items-center">
+        <div className="flex items-center gap-1 text-blue-600 text-xs">
+          <Shield className="h-3 w-3" />
+          Your data is secure
+        </div>
+      </CardFooter>
+    </Card>
+    </div >
   );
 };
 

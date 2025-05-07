@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from "sonner"
 import { ExternalLink, Check, AlertCircle, Info, Bot } from "lucide-react"
 import axios from 'axios';
@@ -18,6 +18,14 @@ const DiscordIntegration: React.FC = () => {
 
   const { user, setUser } = useAuth();
 
+  const [webhookEnabled, setWebhookEnabled] = useState<boolean>(user?.discord_webhook || false);
+
+  useEffect(() => {
+    if (user) {
+      setWebhookEnabled(user.discord_webhook || false);
+    }
+  }, [user]);
+
   const handleSave = async () => {
     if (!webhookUrl.startsWith('https://discord.com/api/webhooks/')) {
       setError('Please enter a valid Discord Webhook URL')
@@ -29,7 +37,7 @@ const DiscordIntegration: React.FC = () => {
     setIsSubmitting(true);
 
     const updatedData = {
-      discord_webhook: webhookUrl || user?.discord_webhook,
+      discord_webhook: webhookUrl,
     };
 
     try {
@@ -46,9 +54,11 @@ const DiscordIntegration: React.FC = () => {
       );
 
       setUser(response.data);
+      setWebhookEnabled(true);
       toast.success('Profile updated successfully!');
     } catch (error: any) {
       const msg = error.response?.data?.message || error.message;
+      setWebhookEnabled(false);
       setError(msg);
       toast.error(msg);
     } finally {
@@ -108,7 +118,7 @@ const DiscordIntegration: React.FC = () => {
         <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
           <span className="bg-indigo-100 text-indigo-700 p-1 rounded">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 127.14 96.36">
-              <path fill="currentColor" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+              <path fill="currentColor" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z" />
             </svg>
           </span>
           Discord Integration
@@ -133,11 +143,10 @@ const DiscordIntegration: React.FC = () => {
         <div className="flex space-x-2">
           <button
             onClick={() => setActiveTab('bot')}
-            className={`px-4 py-2 font-medium text-sm transition-colors duration-200 border-b-2 ${
-              activeTab === 'bot' 
-                ? 'border-indigo-600 text-indigo-600' 
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
+            className={`px-4 py-2 font-medium text-sm transition-colors duration-200 border-b-2 ${activeTab === 'bot'
+              ? 'border-indigo-600 text-indigo-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
           >
             <div className="flex items-center gap-2">
               <Bot size={16} />
@@ -146,11 +155,10 @@ const DiscordIntegration: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('webhook')}
-            className={`px-4 py-2 font-medium text-sm transition-colors duration-200 border-b-2 ${
-              activeTab === 'webhook' 
-                ? 'border-indigo-600 text-indigo-600' 
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
+            className={`px-4 py-2 font-medium text-sm transition-colors duration-200 border-b-2 ${activeTab === 'webhook'
+              ? 'border-indigo-600 text-indigo-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
           >
             <div className="flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -185,7 +193,7 @@ const DiscordIntegration: React.FC = () => {
 
             <div className="space-y-6">
               {botSteps.map((step, index) => (
-                <div 
+                <div
                   key={index}
                   className={`border rounded-lg transition-all ${activeStep === index ? 'border-indigo-400 shadow-md' : 'border-gray-200'}`}
                   onClick={() => setActiveStep(activeStep === index ? null : index)}
@@ -204,7 +212,7 @@ const DiscordIntegration: React.FC = () => {
                       </svg>
                     </div>
                   </div>
-                  
+
                   {activeStep === index && (
                     <div className="p-4 pt-0 border-t border-gray-100">
                       <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
@@ -227,7 +235,7 @@ const DiscordIntegration: React.FC = () => {
           <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm space-y-4">
             <h3 className="font-medium text-gray-800">Add Bot to Your Server</h3>
             <p className="text-gray-600 text-sm">Click the button below to add our Discord bot to your server.</p>
-            
+
             <div className="flex items-center gap-3 pt-2">
               <a
                 href="https://discord.com/oauth2/authorize?client_id=1365546055835455569&permissions=2684370000&scope=bot+applications.commands"
@@ -263,7 +271,7 @@ const DiscordIntegration: React.FC = () => {
 
             <div className="space-y-6">
               {webhookSteps.map((step, index) => (
-                <div 
+                <div
                   key={index}
                   className={`border rounded-lg transition-all ${activeStep === index ? 'border-indigo-400 shadow-md' : 'border-gray-200'}`}
                   onClick={() => setActiveStep(activeStep === index ? null : index)}
@@ -282,7 +290,7 @@ const DiscordIntegration: React.FC = () => {
                       </svg>
                     </div>
                   </div>
-                  
+
                   {activeStep === index && (
                     <div className="p-4 pt-0 border-t border-gray-100">
                       <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
@@ -307,49 +315,58 @@ const DiscordIntegration: React.FC = () => {
               <span className="h-6 w-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-sm">3</span>
               Enter your Discord Webhook URL
             </h3>
-            
+
             <div>
-              <label htmlFor="webhook" className="block text-sm font-medium text-gray-700 mb-1">Discord Webhook URL</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 127.14 96.36" className="text-gray-400">
-                    <path fill="currentColor" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
-                  </svg>
+              {webhookEnabled ? (
+                <div className="flex items-center gap-2 text-green-600 text-sm">
+                  <Check size={18} />
+                  Webhook already saved
                 </div>
-                <input
-                  id="webhook"
-                  type="text"
-                  value={webhookUrl}
-                  onChange={(e) => setWebhookUrl(e.target.value)}
-                  placeholder="https://discord.com/api/webhooks/..."
-                  className={`w-full pl-10 pr-12 py-3 border rounded-md shadow-sm focus:outline-none focus:ring-2 ${error ? 'border-red-300 focus:ring-red-200' : 'focus:ring-indigo-200 border-gray-300'}`}
-                />
-                {webhookUrl && (
-                  <button 
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                    onClick={() => {
-                      setWebhookUrl('');
-                      setError('');
-                    }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                )}
-              </div>
-              {error && (
-                <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-                  <AlertCircle size={14} />
-                  {error}
-                </p>
-              )}
-              {webhookUrl && !error && (
-                <p className="mt-2 text-sm text-green-600 flex items-center gap-1">
-                  <Check size={14} />
-                  URL format is valid
-                </p>
+              ) : (
+                <div>
+                  <label htmlFor="webhook" className="block text-sm font-medium text-gray-700 mb-1">Discord Webhook URL</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 127.14 96.36" className="text-gray-400">
+                        <path fill="currentColor" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z" />
+                      </svg>
+                    </div>
+                    <input
+                      id="webhook"
+                      type="text"
+                      value={webhookUrl}
+                      onChange={(e) => setWebhookUrl(e.target.value)}
+                      placeholder="https://discord.com/api/webhooks/..."
+                      className={`w-full pl-10 pr-12 py-3 border rounded-md shadow-sm focus:outline-none focus:ring-2 ${error ? 'border-red-300 focus:ring-red-200' : 'focus:ring-indigo-200 border-gray-300'}`}
+                    />
+                    {webhookUrl && (
+                      <button
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                        onClick={() => {
+                          setWebhookUrl('');
+                          setError('');
+                        }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                  {error && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                      <AlertCircle size={14} />
+                      {error}
+                    </p>
+                  )}
+                  {webhookUrl && !error && (
+                    <p className="mt-2 text-sm text-green-600 flex items-center gap-1">
+                      <Check size={14} />
+                      URL format is valid
+                    </p>
+                  )}
+                </div>
               )}
             </div>
 
@@ -361,7 +378,7 @@ const DiscordIntegration: React.FC = () => {
                 <Check size={18} />
                 {isSubmitting ? 'Saving...' : 'Save Webhook'}
               </button>
-              
+
               <button
                 onClick={() => setWebhookUrl('')}
                 className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition"
@@ -389,13 +406,14 @@ const DiscordIntegration: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+      )
+      }
 
       <div className="text-xs text-gray-500 flex items-center gap-1">
         <Info size={12} />
         Need help? Check out our <a href="#" className="text-indigo-600 hover:underline inline-flex items-center gap-1">Discord setup documentation <ExternalLink size={10} /></a>
       </div>
-    </div>
+    </div >
   )
 }
 
