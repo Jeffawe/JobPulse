@@ -31,7 +31,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           localStorage.removeItem('token');
         }
       } catch (error) {
-        console.error('Auth check failed:', error);
         localStorage.removeItem('token');
       } finally {
         setIsLoading(false);
@@ -44,6 +43,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const googleLogin = async (token: string, isTestUser: boolean) => {
     setIsLoading(true);
     try {
+      if (isTestUser) {
+        const testItem = localStorage.getItem('testInfo');
+      
+        if (testItem) {
+          const { token: jwtToken, user, expiresAt } = JSON.parse(testItem);
+      
+          if (Date.now() < expiresAt) {
+            localStorage.setItem('token', jwtToken);
+            setUser(user);
+            setIsAuthenticated(true);
+            setIsLoading(false);
+            return;
+          } else {
+            localStorage.removeItem('testInfo');
+          }
+        }
+      }
+
       const response = await fetch(`${API_BASE_URL}/auth/google`, {
         method: 'POST',
         headers: {
@@ -63,6 +80,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       const { token: jwtToken, user, firstTime } = await response.json();
       localStorage.setItem('token', jwtToken);
+
+      if (isTestUser) {
+        const testInfo = {
+          token: jwtToken,
+          user: user,
+          expiresAt: Date.now() + 14 * 24 * 60 * 60 * 1000 // 2 weeks in ms
+        };
+        localStorage.setItem('testInfo', JSON.stringify(testInfo));
+      }
+
       if (jwtToken && firstTime) {
         const response = await fetch(`${API_BASE_URL}/job/setup-gmail-push`, {
           headers: {

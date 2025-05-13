@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { toast } from "sonner"
-import { ExternalLink, Check, AlertCircle, Info, Bot } from "lucide-react"
+import { ExternalLink, Check, AlertCircle, Info, Bot, AlertTriangle } from "lucide-react"
 import axios from 'axios';
 import { User } from '../types/auth';
 import { useAuth } from '../context/AuthContext';
@@ -32,6 +32,10 @@ const DiscordIntegration: React.FC = () => {
       toast.error('Please enter a valid Discord Webhook URL', { duration: 4000 })
       setSuccess(false)
       return
+    }
+
+    if (user?.isTestUser) {
+      return;
     }
 
     setIsSubmitting(true);
@@ -379,10 +383,15 @@ const DiscordIntegration: React.FC = () => {
             <div className="flex items-center gap-3 pt-2">
               <button
                 onClick={handleSave}
+                disabled={user?.isTestUser || isSubmitting}
                 className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:ring-offset-1"
               >
                 <Check size={18} />
-                {isSubmitting ? 'Saving...' : 'Save Webhook'}
+                {user?.isTestUser
+                  ? "Can't save as a test user"
+                  : isSubmitting
+                    ? 'Saving...'
+                    : 'Save Webhook'}
               </button>
 
               <button
@@ -411,6 +420,15 @@ const DiscordIntegration: React.FC = () => {
               <p className="text-yellow-700 text-sm">For frontend updates and enhanced data management, we recommend using our Discord bot integration.</p>
             </div>
           </div>
+          {user?.isTestUser && (
+            <div className="bg-red-50 p-4 rounded-lg border border-red-100 flex items-start gap-3">
+              <AlertTriangle size={20} className="text-red-600 mt-0.5" />
+              <div>
+                <h4 className="font-medium text-red-800">Test Account Warning</h4>
+                <p className="text-red-700 text-sm">You are currently using a test account. Some features such as manual webhook uploads are limited in this mode.</p>
+              </div>
+            </div>
+          )}
         </div>
       )
       }

@@ -1,7 +1,6 @@
 import { AlertTriangle } from 'lucide-react';
 
 const TestAccountWarning = () => {
-
     return (
         <div className="flex items-start gap-3 bg-yellow-100 text-yellow-800 px-4 py-3 mb-4 rounded-md border border-yellow-300">
             <AlertTriangle className="w-5 h-5 mt-1" />

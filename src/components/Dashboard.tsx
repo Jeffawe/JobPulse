@@ -7,6 +7,7 @@ import { Filter } from 'lucide-react';
 import axios from 'axios';
 import { toast } from "sonner";
 import TestAccountWarning from './Settings/TestAccountWarning';
+import DashboardModal from './DashboardModal';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
@@ -18,6 +19,8 @@ const Dashboard: React.FC = () => {
   const [_, setSocket] = useState<Socket | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState('connecting');
+
+  const [openTestModal, setOpenTestModal] = useState(false);
 
   const { user, setUser } = useAuth();
 
@@ -34,7 +37,6 @@ const Dashboard: React.FC = () => {
 
       if (response.data.success) {
         setEmails(response.data.emails);
-        toast.success("Application data refreshed");
       }
     } catch (error) {
       toast.error("Failed to refresh data");
@@ -108,7 +110,7 @@ const Dashboard: React.FC = () => {
           return prevEmails;
         });
       });
-    }else{
+    } else {
       refreshData();
     }
 
@@ -133,6 +135,10 @@ const Dashboard: React.FC = () => {
 
   const handleFilterCreation = async () => {
     try {
+      if (user?.isTestUser) {
+        setOpenTestModal(true);
+        return
+      }
       const response = await axios.post<User>(
         `${API_BASE_URL}/auth/create-filter`,
         {},
@@ -194,9 +200,18 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {user?.discord_webhook === false && <NoDiscordWebhook />}
+      {openTestModal && (
+        <DashboardModal
+          isOpen={openTestModal}
+          onClose={() => setOpenTestModal(false)}
+          message="As a regular user, this button creates a Gmail filter that helps the app fetch relevant emails (we don’t fetch from your Inbox directly). 
+          However, for test users, this feature is disabled — the filter won’t be created."
+        />
+      )}
 
-      {user?.isTestUser === true && <TestAccountWarning />}
+      {user && !user.discord_webhook && !user.isTestUser && <NoDiscordWebhook />}
+      {user && user.isTestUser && <TestAccountWarning />}
+
 
       {isLoading ? (
         <div className="text-gray-600 text-center bg-gray-100 p-6 rounded shadow pt-5">

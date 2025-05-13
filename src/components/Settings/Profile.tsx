@@ -191,7 +191,7 @@ const ProfileSettings = () => {
           <div className="pt-3">
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || user?.isTestUser}
               className={`w-fit flex items-center gap-2 transition-all duration-300 ${saveSuccess
                   ? "bg-green-600 hover:bg-green-700"
                   : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"

@@ -3,14 +3,24 @@ import { Link } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import AuthModal from './AuthModal';
 import { Menu, X } from 'lucide-react'; // You can use any icon library you prefer
+import TestAccountModal from './LogOutOption';
 
 const Navbar: React.FC = () => {
-    const { isAuthenticated, logout } = useAuth();
+    const [isOpen, setIsOpen] = useState(false);
+    const { isAuthenticated, logout, user } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
 
     const openModal = () => setIsModalOpen(true);
     const toggleMenu = () => setMenuOpen(prev => !prev);
+
+    const logOutOptions = () => {
+        if(user?.isTestUser){
+            setIsOpen(true);
+        }else{
+            logout();
+        }
+    }
 
     return (
         <nav className="bg-white shadow-md px-6 py-4">
@@ -38,7 +48,7 @@ const Navbar: React.FC = () => {
                                 Settings
                             </Link>
                             <button
-                                onClick={logout}
+                                onClick={logOutOptions}
                                 className="text-red-500 hover:text-red-700 font-medium"
                             >
                                 Logout
@@ -46,20 +56,18 @@ const Navbar: React.FC = () => {
                         </>
                     ) : (
                         <>
-                            <button onClick={openModal} className="text-gray-700 hover:text-blue-600">
-                                Login
-                            </button>
                             <button
                                 onClick={openModal}
                                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                             >
-                                Sign Up
+                                Sign In / Sign Up
                             </button>
                         </>
                     )}
                 </div>
             </div>
 
+            <TestAccountModal isOpen={isOpen} setIsOpen={setIsOpen} />
             {/* Auth Modal */}
             <AuthModal isOpen={isModalOpen} setisOpen={setIsModalOpen} />
         </nav>
