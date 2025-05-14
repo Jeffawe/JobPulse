@@ -38,7 +38,7 @@ const Navbar: React.FC = () => {
                 </div>
 
                 {/* Nav Links */}
-                <div className={`flex-col md:flex-row md:flex items-center gap-4 absolute md:static bg-white left-0 w-full md:w-auto md:bg-transparent px-6 md:px-0 py-4 md:py-0 shadow-md md:shadow-none z-50 transition-all duration-300 ease-in-out ${menuOpen ? 'top-16' : 'top-[-500px]'}`}>
+                <div className={`flex-col md:flex-row md:flex items-center gap-4 absolute md:static bg-white left-0 w-full md:w-auto md:bg-transparent px-6 md:px-4 py-4 md:py-4 shadow-md md:shadow-none z-50 transition-all duration-300 ease-in-out ${menuOpen ? 'top-16' : 'top-[-500px]'}`}>
                     {isAuthenticated ? (
                         <>
                             <Link to="/dashboard" className="text-gray-700 hover:text-blue-600">

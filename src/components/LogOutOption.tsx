@@ -37,7 +37,6 @@ const TestAccountModal : React.FC<TestAccountModalProps> = ({ isOpen, setIsOpen 
         } finally {
             setIsOpen(false);
         }
-
     };
 
     if (!isOpen) return null;

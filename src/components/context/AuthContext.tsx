@@ -43,21 +43,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const googleLogin = async (token: string, isTestUser: boolean) => {
     setIsLoading(true);
     try {
+      let tokenValue = token;
       if (isTestUser) {
         const testItem = localStorage.getItem('testInfo');
-      
+
         if (testItem) {
-          const { token: jwtToken, user, expiresAt } = JSON.parse(testItem);
-      
-          if (Date.now() < expiresAt) {
-            localStorage.setItem('token', jwtToken);
-            setUser(user);
-            setIsAuthenticated(true);
-            setIsLoading(false);
-            return;
-          } else {
-            localStorage.removeItem('testInfo');
-          }
+          const { user } = JSON.parse(testItem)
+          tokenValue = user.id
+        } else {
+          tokenValue = 'test'
         }
       }
 
@@ -68,7 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           'api-key': API_KEY
         },
         body: JSON.stringify({
-          token,        // The OAuth token from Google
+          token: tokenValue,        // The OAuth token from Google
           is_test_user: isTestUser  // Boolean flag for test user
         }),
       });
@@ -83,14 +77,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (isTestUser) {
         const testInfo = {
-          token: jwtToken,
-          user: user,
-          expiresAt: Date.now() + 14 * 24 * 60 * 60 * 1000 // 2 weeks in ms
+          user: user
         };
         localStorage.setItem('testInfo', JSON.stringify(testInfo));
       }
 
-      if (jwtToken && firstTime) {
+      if (jwtToken && firstTime && !isTestUser) {
         const response = await fetch(`${API_BASE_URL}/job/setup-gmail-push`, {
           headers: {
             'Authorization': `Bearer ${jwtToken}`,

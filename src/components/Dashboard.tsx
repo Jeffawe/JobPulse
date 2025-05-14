@@ -11,6 +11,7 @@ import DashboardModal from './DashboardModal';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
+const WS_BASE_URL = import.meta.env.VITE_WS_BASE_URL;
 
 const Dashboard: React.FC = () => {
   const [jobApplications, setJobApplications] = useState<JobApplication[]>([]);
@@ -36,6 +37,7 @@ const Dashboard: React.FC = () => {
       });
 
       if (response.data.success) {
+        toast.success("Data refreshed");
         setEmails(response.data.emails);
       }
     } catch (error) {
@@ -62,8 +64,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     if (!user?.id) return;
 
-    // Connect to WebSocket
-    const newSocket = io(API_BASE_URL, {
+    const newSocket = io(WS_BASE_URL, {
       transports: ['websocket'],
       auth: {
         token: localStorage.getItem('token')
@@ -72,11 +73,11 @@ const Dashboard: React.FC = () => {
 
     setSocket(newSocket);
 
-    // Socket event listeners
+    // Always register events right away
     newSocket.on('connect', () => {
       setConnectionStatus('connected');
       console.log('Connected to WebSocket server');
-      newSocket.emit('register', user.id);
+      newSocket.emit('register', user.id, user.isTestUser);
     });
 
     newSocket.on('disconnect', () => {
@@ -89,41 +90,43 @@ const Dashboard: React.FC = () => {
       console.error('WebSocket connection error:', error);
     });
 
-    if (connectionStatus === 'connected') {
-      // Handle initial emails from socket
-      newSocket.on('initialEmails', (initialEmails: EmailData[]) => {
-        setEmails(initialEmails);
-        setIsLoading(false);
-      });
+    newSocket.on('initialEmails', (initialEmails: EmailData[]) => {
+      setEmails(initialEmails);
+      setIsLoading(false);
+    });
 
-      // Handle new emails coming in
-      newSocket.on('newEmails', (newEmailsData: EmailData[]) => {
-        console.log('New emails received:', newEmailsData);
-        setEmails(prevEmails => {
-          const existingIds = new Set(prevEmails.map(email => email.id));
-          const uniqueNewEmails = newEmailsData.filter(email => !existingIds.has(email.id));
+    newSocket.on('newEmails', (newEmailsData: EmailData[]) => {
+      console.log('New emails received:', newEmailsData);
+      setEmails(prevEmails => {
+        const existingIds = new Set(prevEmails.map(email => email.id));
+        const uniqueNewEmails = newEmailsData.filter(email => !existingIds.has(email.id));
 
-          if (uniqueNewEmails.length > 0) {
-            toast.info(`${uniqueNewEmails.length} new job application updates`);
-            return [...prevEmails, ...uniqueNewEmails];
-          }
-          return prevEmails;
-        });
+        if (uniqueNewEmails.length > 0) {
+          toast.info(`${uniqueNewEmails.length} new job application updates`, { duration: 1000 });
+          return [...prevEmails, ...uniqueNewEmails];
+        }
+        return prevEmails;
       });
-    } else {
-      refreshData();
-    }
+    });
+
+    // Fallback if socket never connects
+    const fallbackTimeout = setTimeout(() => {
+      if (connectionStatus !== 'connected') {
+        refreshData();
+      }
+    }, 5000);
 
     return () => {
-      if (newSocket) {
-        newSocket.disconnect();
-      }
+      clearTimeout(fallbackTimeout);
+      newSocket.disconnect();
     };
   }, [user?.id]);
+
 
   // Transform email data to job application format
   useEffect(() => {
     if (emails.length > 0) {
+      console.log(emails);
       const formattedApplications = emails.map(formatApplicationData);
       setJobApplications(formattedApplications);
     }
