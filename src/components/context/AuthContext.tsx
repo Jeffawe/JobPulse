@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, AuthContextType } from '../types/auth';
 import axios from 'axios';
+import { toast } from 'sonner';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -69,10 +70,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (!response.ok) {
         const error = await response.json();
+        if (response.status === 429) {
+          toast.error(`${error.error} ${error.message}`, { duration: 4000 });
+        }
+
         throw new Error(error.message);
       }
 
-      const { token: jwtToken, user, firstTime } = await response.json();
+      const { token: jwtToken, user, firstTime, message } = await response.json();
       localStorage.setItem('token', jwtToken);
 
       if (isTestUser) {
@@ -95,6 +100,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           throw new Error(error.message);
         }
       }
+
+      const testUserMessage = message ? message : 'Test User Created Successfully!';
+      const userMessage = message ? message : 'User signed in successfully!';
+      const finalMessage = (isTestUser) ? userMessage : testUserMessage;
+      toast.success(finalMessage, { duration: 4000 });
       setUser(user);
       setIsAuthenticated(true);
     } catch (error) {

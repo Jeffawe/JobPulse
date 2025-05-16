@@ -6,12 +6,12 @@ import axios from 'axios';
 interface TestAccountModalProps {
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
-  }
+}
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
-const TestAccountModal : React.FC<TestAccountModalProps> = ({ isOpen, setIsOpen }) => {
+const TestAccountModal: React.FC<TestAccountModalProps> = ({ isOpen, setIsOpen }) => {
     const { logout, user } = useAuth();
 
     const handleLogout = () => {
@@ -25,14 +25,19 @@ const TestAccountModal : React.FC<TestAccountModalProps> = ({ isOpen, setIsOpen 
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                     'api-key': API_KEY,
+                    'Content-Type': 'application/json',
+                },
+                data: {
+                    email: user?.email,
                 },
             });
 
             toast.success("Account successfully deleted");
             logout();
+            localStorage.removeItem('testInfo');
             window.location.href = "/";
         } catch (error: any) {
-            const msg = error.response?.data?.message || "Failed to delete account";
+            const msg = "Failed to delete account. Account will be deleted later";
             toast.error(msg);
         } finally {
             setIsOpen(false);

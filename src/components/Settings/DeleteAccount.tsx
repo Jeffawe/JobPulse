@@ -68,6 +68,7 @@ const DeleteAccount: React.FC = () => {
       }
 
       toast.success("Account successfully deleted");
+      localStorage.removeItem('testInfo');
       logout();
       window.location.href = "/";
     } catch (error: any) {

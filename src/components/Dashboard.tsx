@@ -28,7 +28,7 @@ const Dashboard: React.FC = () => {
   const refreshData = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${API_BASE_URL}/job/emails?refresh=true`, {
+      const response = await axios.get(`${API_BASE_URL}/job/emails?refresh=false`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -213,7 +213,8 @@ const Dashboard: React.FC = () => {
       )}
 
       {user && !user.discord_webhook && !user.isTestUser && <NoDiscordWebhook />}
-      {user && user.isTestUser && <TestAccountWarning />}
+
+      {user?.isTestUser === true ? <TestAccountWarning /> : null}
 
 
       {isLoading ? (

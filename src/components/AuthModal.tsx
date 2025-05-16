@@ -19,7 +19,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, setisOpen }) => {
                 response_type: 'code',
                 scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.labels https://www.googleapis.com/auth/gmail.settings.basic https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.labels https://www.googleapis.com/auth/gmail.settings.basic',
                 access_type: 'offline',       // Required for refresh token
-                prompt: 'select_account',            // Forces refresh token every time (only on first time ideally)
+                prompt: 'consent select_account',  
+                include_granted_scopes: 'true'          // Forces refresh token every time (only on first time ideally)
             });
 
             const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;

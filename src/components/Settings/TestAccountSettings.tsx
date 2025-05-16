@@ -10,6 +10,7 @@ const TestAccountSettings: React.FC = () => {
     "Some additional features may be unavailable.",
     "Data may be cleared after a week to a month depending on server cleanup cycles.",
     "You cannot change email credentials on a test account.",
+    "To make a bug report. Got to Help and Support page and send a message there. Add Bug Report as the subject and describe the issue.", 
   ];
 
   return (

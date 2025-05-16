@@ -14,6 +14,7 @@ import DiscordWebhook from './components/Settings/DiscordWebhook';
 import DeleteAccount from './components/Settings/DeleteAccount';
 import OAuthCallback from './components/OAuthCallback';
 import TestAccountSettings from './components/Settings/TestAccountSettings';
+import Footer from './components/Footer';
 
 const App: React.FC = () => {
   return (
@@ -44,6 +45,7 @@ const AppContent: React.FC = () => {
           <Route path="test" element={<ProtectedRoute> <TestAccountSettings /> </ProtectedRoute>} />
         </Route>
       </Routes>
+      <Footer />
       <Toaster richColors className='text-blue-600' position="top-right" />
     </div>
   );
