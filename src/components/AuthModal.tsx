@@ -10,6 +10,7 @@ interface AuthModalProps {
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, setisOpen }) => {
     const { googleLogin } = useAuth();
+    const [testLoading, setTestLoading] = React.useState(false);
 
     const handleGoogleSignIn = () => {
         try {
@@ -19,7 +20,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, setisOpen }) => {
                 response_type: 'code',
                 scope: 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.labels https://www.googleapis.com/auth/gmail.settings.basic https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.labels https://www.googleapis.com/auth/gmail.settings.basic',
                 access_type: 'offline',       // Required for refresh token
-                prompt: 'consent select_account',  
+                prompt: 'consent select_account',
                 include_granted_scopes: 'true'          // Forces refresh token every time (only on first time ideally)
             });
 
@@ -33,12 +34,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, setisOpen }) => {
     };
 
     const handleTestUserSignIn = async () => {
+        setTestLoading(true);
         try {
             await googleLogin('test', true);
             setisOpen(false);
         } catch (error) {
             console.error('Error creating test user:', error);
             toast.error('Test User Creation Failed. Please try again.');
+        } finally {
+            setTestLoading(false);
         }
     }
 
@@ -78,9 +82,22 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, setisOpen }) => {
                                 <span className="text-gray-700 font-medium">Continue with Google</span>
                             </button>
 
-                            <button onClick={handleTestUserSignIn} className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 px-4 hover:bg-gray-50 transition-colors">
-                                <Settings className="flex-shrink-0" />
-                                <span className="text-gray-700 font-medium">Create a Test User</span>
+                            <button
+                                onClick={handleTestUserSignIn}
+                                className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 px-4 hover:bg-gray-50 transition-colors"
+                                disabled={testLoading}
+                            >
+                                {testLoading ? (
+                                    <>
+                                        <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-700 rounded-full animate-spin"></div>
+                                        <span className="text-gray-700 font-medium">Creating Test User...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Settings className="flex-shrink-0" />
+                                        <span className="text-gray-700 font-medium">Create a Test User</span>
+                                    </>
+                                )}
                             </button>
 
                             <div className="pt-4 text-center border-t border-gray-200">
