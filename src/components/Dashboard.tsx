@@ -8,6 +8,7 @@ import axios from 'axios';
 import { toast } from "sonner";
 import TestAccountWarning from './Settings/TestAccountWarning';
 import DashboardModal from './DashboardModal';
+import OnboardingDemo from './Tutorials/OnboardingDemo';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
@@ -22,6 +23,7 @@ const Dashboard: React.FC = () => {
   const [connectionStatus, setConnectionStatus] = useState('connecting');
 
   const [openTestModal, setOpenTestModal] = useState(false);
+  const [openTutorialModal, setOpenTutorialModal] = useState(false);
 
   const { user, setUser } = useAuth();
 
@@ -132,9 +134,15 @@ const Dashboard: React.FC = () => {
     }
   }, [emails]);
 
-  const handleDelete = (id: number) => {
-    setJobApplications(jobApplications.filter((job) => job.id !== id));
-  };
+  useEffect(() => {
+    if(user?.firstTimeLogin) {
+      setOpenTutorialModal(true);
+    }
+  }, []);
+
+  // const handleDelete = (id: number) => {
+  //   setJobApplications(jobApplications.filter((job) => job.id !== id));
+  // };
 
   const handleFilterCreation = async () => {
     try {
@@ -212,6 +220,10 @@ const Dashboard: React.FC = () => {
         />
       )}
 
+      {openTutorialModal && (
+        <OnboardingDemo />
+      )}
+
       {user && !user.discord_webhook && !user.isTestUser && <NoDiscordWebhook />}
 
       {user?.isTestUser === true ? <TestAccountWarning /> : null}
@@ -252,7 +264,7 @@ const Dashboard: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="mt-4 flex justify-end space-x-3">
+                {/* <div className="mt-4 flex justify-end space-x-3">
                   <button className="text-blue-600 hover:underline">Edit</button>
                   <button
                     onClick={() => handleDelete(job.id)}
@@ -260,7 +272,7 @@ const Dashboard: React.FC = () => {
                   >
                     Delete
                   </button>
-                </div>
+                </div> */}
               </div>
             ))}
           </div>

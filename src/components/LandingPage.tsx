@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AuthModal from './AuthModal';
+import BetaNotificationModal from './BetaModal';
 
 const LandingPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [openBetaModal, setOpenBetaModal] = useState(false);
+
   const openModal = () => {
     setIsModalOpen(true);
   };
+
+  useEffect(() => {
+    if (!localStorage.getItem('betaModal')) {
+      setOpenBetaModal(true);
+      localStorage.setItem('betaModal', 'true');
+    }
+  }, []);
 
   return (
     <div className="min-h-screen items-center justify-center px-10 py-10">
@@ -18,6 +28,14 @@ const LandingPage: React.FC = () => {
           JobPulse automatically scans your emails to organize and track all your job applications in a heartbeat.
           Never miss an interview or lose track of your applications again.
         </p>
+
+        {openBetaModal && (
+          <BetaNotificationModal
+            isOpen={openBetaModal}
+            onClose={() => setOpenBetaModal(false)}
+            onGenerateTestUser={openModal}
+          />
+        )}
 
         <div className="flex flex-col items-center gap-6 mb-8">
           {/* Row 1: Email Integration */}

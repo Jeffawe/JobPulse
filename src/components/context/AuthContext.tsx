@@ -105,6 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const userMessage = message ? message : 'User signed in successfully!';
       const finalMessage = (isTestUser) ? userMessage : testUserMessage;
       toast.success(finalMessage, { duration: 4000 });
+      user.firstTimeLogin = firstTime
       setUser(user);
       setIsAuthenticated(true);
     } catch (error) {

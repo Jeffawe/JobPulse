@@ -9,6 +9,7 @@ export interface User {
     email_addresses?: string;
     label_id?: string;
     isTestUser?: boolean;
+    firstTimeLogin?: boolean;
 }
 
 export interface JobApplication {

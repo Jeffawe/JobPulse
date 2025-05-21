@@ -1,14 +1,33 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/x-icon" href="/heart-rate.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="JobPulse - Track your job applications, scan emails, and get notifications via Discord bot" />
+    <meta name="theme-color" content="#2563eb" />
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="JobPulse" />
+    <meta property="og:description" content="Track your job applications, scan emails, and get notifications via Discord bot" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Font preconnect for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Google Sign-In API -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <title>JobPulse</title>
+    
+    <title>JobPulse | Track Job Applications</title>
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="/src/main.tsx" as="script" type="module" />
   </head>
   <body>
     <div id="root"></div>
+    <noscript>You need to enable JavaScript to run this application.</noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
