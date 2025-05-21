@@ -33,7 +33,6 @@ const LandingPage: React.FC = () => {
           <BetaNotificationModal
             isOpen={openBetaModal}
             onClose={() => setOpenBetaModal(false)}
-            onGenerateTestUser={openModal}
           />
         )}
 

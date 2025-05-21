@@ -3,13 +3,11 @@ import React, { useState, useEffect } from 'react';
 interface BetaModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onGenerateTestUser: () => void;
 }
 
 const BetaNotificationModal: React.FC<BetaModalProps> = ({ 
   isOpen, 
-  onClose,
-  onGenerateTestUser
+  onClose
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
 
@@ -20,11 +18,6 @@ const BetaNotificationModal: React.FC<BetaModalProps> = ({
   const handleClose = () => {
     setIsModalOpen(false);
     onClose();
-  };
-
-  const handleGenerateTestUser = () => {
-    onGenerateTestUser();
-    handleClose();
   };
 
   if (!isModalOpen) return null;
@@ -85,24 +78,6 @@ const BetaNotificationModal: React.FC<BetaModalProps> = ({
           <p className="text-gray-700 dark:text-gray-300 mb-2">
             Alternatively, you can generate a test user to explore the features:
           </p>
-        </div>
-
-        {/* Modal footer */}
-        <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 rounded-b-lg flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-2">
-          <button
-            type="button"
-            className="w-full sm:w-auto px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onClick={handleClose}
-          >
-            I Already Have Access
-          </button>
-          <button
-            type="button"
-            className="w-full sm:w-auto px-4 py-2 bg-blue-600 border border-transparent rounded-md text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onClick={handleGenerateTestUser}
-          >
-            Generate Test User
-          </button>
         </div>
       </div>
     </div>
