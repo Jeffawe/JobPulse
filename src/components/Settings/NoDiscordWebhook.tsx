@@ -9,7 +9,7 @@ const NoDiscordWebhook = () => {
           No Discord Webhook connected. For enhanced privacy and permanent storage, we recommend connecting one.
         </p>
         <p className="mt-1">
-          Without a webhook, your data is temporarily stored on our servers and may expire after 1 month. Our Discord bot can set up and manage your data in a channel when you invite it and run the /setup command with your email.
+          Without a webhook, your data is not stored anywhere and may expire after 1 month. Our Discord bot can set up and manage your data in a channel when you invite it and run the /setup command with your email.
         </p>
         <p className="mt-1">
           You can also manually provide a webhook URL for basic integration, but using our bot provides additional frontend updates and better data management.

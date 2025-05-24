@@ -15,6 +15,7 @@ import DeleteAccount from './components/Settings/DeleteAccount';
 import OAuthCallback from './components/OAuthCallback';
 import TestAccountSettings from './components/Settings/TestAccountSettings';
 import Footer from './components/Footer';
+import BetaSettings from './components/Settings/BetaSettings';
 
 const App: React.FC = () => {
   return (
@@ -43,6 +44,7 @@ const AppContent: React.FC = () => {
           <Route path="discord" element={<ProtectedRoute> <DiscordWebhook /> </ProtectedRoute>} />
           <Route path="delete" element={<ProtectedRoute> <DeleteAccount /> </ProtectedRoute>} />
           <Route path="test" element={<ProtectedRoute> <TestAccountSettings /> </ProtectedRoute>} />
+          <Route path="beta" element={<ProtectedRoute> <BetaSettings /> </ProtectedRoute>} />
         </Route>
       </Routes>
       <Footer />

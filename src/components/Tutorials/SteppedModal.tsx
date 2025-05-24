@@ -18,6 +18,8 @@ interface SteppedModalProps {
   isOpen: boolean;
   onClose: () => void;
   steps: Step[];
+  currentStepG?: number;
+  setCurrentStepG?: (step: number) => void;
   onComplete?: () => void;
 }
 
@@ -25,15 +27,18 @@ const SteppedModal: React.FC<SteppedModalProps> = ({
   isOpen,
   onClose,
   steps,
+  currentStepG,
+  setCurrentStepG,
   onComplete,
 }) => {
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(currentStepG || 0);
   const totalSteps = steps.length;
   const progressPercentage = ((currentStep + 1) / totalSteps) * 100;
 
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
       setCurrentStep(currentStep + 1);
+      setCurrentStepG?.(currentStep + 1);
     } else {
       // On last step, complete the process
       onComplete?.();
@@ -44,18 +49,20 @@ const SteppedModal: React.FC<SteppedModalProps> = ({
   const handleBack = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+      setCurrentStepG?.(currentStep - 1);
     }
   };
 
   const handleClose = () => {
     // Reset step when closing
     setCurrentStep(0);
+    setCurrentStepG?.(0);
     onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg bg-amber-50">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
             {steps[currentStep]?.title}

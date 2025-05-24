@@ -30,8 +30,11 @@ import {
   MailCheck 
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAuth } from '../context/AuthContext';
 
 const HelpSupport: React.FC = () => {
+  const { user } = useAuth();
+
   const faqs = [
     {
       question: "What does JobPulse do?",
@@ -109,7 +112,7 @@ const HelpSupport: React.FC = () => {
             color: 3447003, // Discord blue color
             timestamp: new Date().toISOString(),
             footer: {
-              text: "Sent from JobPulse Support"
+              text: `Sent from JobPulse Support by ${user?.email || 'Anonymous'}`,
             }
           }
         ]

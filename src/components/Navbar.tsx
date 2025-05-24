@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import AuthModal from './AuthModal';
-import { Menu, X } from 'lucide-react'; // You can use any icon library you prefer
+import { Menu, X } from 'lucide-react';
 import TestAccountModal from './LogOutOption';
 
 const Navbar: React.FC = () => {
@@ -15,9 +15,9 @@ const Navbar: React.FC = () => {
     const toggleMenu = () => setMenuOpen(prev => !prev);
 
     const logOutOptions = () => {
-        if(user?.isTestUser){
+        if (user?.isTestUser) {
             setIsOpen(true);
-        }else{
+        } else {
             logout();
         }
     }
@@ -26,8 +26,9 @@ const Navbar: React.FC = () => {
         <nav className="bg-white shadow-md px-6 py-4">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 {/* Logo */}
-                <div className="text-2xl font-bold text-blue-600">
+                <div className="flex items-center space-x-2 text-2xl font-bold text-blue-600">
                     <Link to="/">JobPulse</Link>
+                    <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-0.5 rounded">Beta</span>
                 </div>
 
                 {/* Hamburger Icon */}

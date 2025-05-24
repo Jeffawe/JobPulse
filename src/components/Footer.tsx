@@ -27,7 +27,7 @@ const Footer = () => {
 
           <div className="flex space-x-6">
             <a
-              href="/"
+              href="https://jeffawe.github.io/toa.github.io/"
               className="text-sm hover:text-white hover:underline transition-colors"
             >
               Terms &amp; Conditions

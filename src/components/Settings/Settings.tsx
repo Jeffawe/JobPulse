@@ -7,7 +7,8 @@ import {
   Webhook,
   Trash2,
   LifeBuoy,
-  Hammer 
+  Hammer,
+  AlertTriangle,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -49,7 +50,14 @@ const SettingsLayout: React.FC = () => {
       path: '/settings/delete',
       icon: Trash2,
       description: 'Delete your account'
+    },
+    {
+      name: 'Beta',
+      path: '/settings/beta',
+      icon: AlertTriangle,
+      description: 'JobPulse in Beta'
     }
+
   ];
   
   if (isTestUser) {

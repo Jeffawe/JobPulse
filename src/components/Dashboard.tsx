@@ -23,7 +23,7 @@ const Dashboard: React.FC = () => {
   const [connectionStatus, setConnectionStatus] = useState('connecting');
 
   const [openTestModal, setOpenTestModal] = useState(false);
-  const [openTutorialModal, setOpenTutorialModal] = useState(false);
+  //const [openTutorialModal, setOpenTutorialModal] = useState(false);
 
   const { user, setUser } = useAuth();
 
@@ -134,11 +134,11 @@ const Dashboard: React.FC = () => {
     }
   }, [emails]);
 
-  useEffect(() => {
-    if(user?.firstTimeLogin) {
-      setOpenTutorialModal(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (user?.firstTimeLogin) {
+  //     setOpenTutorialModal(true);
+  //   }
+  // }, []);
 
   // const handleDelete = (id: number) => {
   //   setJobApplications(jobApplications.filter((job) => job.id !== id));
@@ -220,13 +220,10 @@ const Dashboard: React.FC = () => {
         />
       )}
 
-      {openTutorialModal && (
-        <OnboardingDemo />
-      )}
-
+      <OnboardingDemo />
       {user && !user.discord_webhook && !user.isTestUser && <NoDiscordWebhook />}
 
-      {user?.isTestUser === true ? <TestAccountWarning /> : null}
+      {user?.isTestUser && <TestAccountWarning />}
 
 
       {isLoading ? (
