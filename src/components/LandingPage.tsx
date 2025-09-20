@@ -8,15 +8,36 @@ const LandingPage: React.FC = () => {
   const [openBetaModal, setOpenBetaModal] = useState(false);
 
   const openModal = () => {
-    setIsModalOpen(true);
+    setOpenBetaModal(true);
   };
 
   useEffect(() => {
-    if (!localStorage.getItem('betaModal')) {
+    const storageKey = "betaModal";
+    const expiryMinutes = 5; // how long before it expires
+    const now = Date.now();
+
+    const item = localStorage.getItem(storageKey);
+
+    if (!item) {
+      // not set or expired -> show modal
       setOpenBetaModal(true);
-      localStorage.setItem('betaModal', 'true');
+      // store with new expiry time
+      const data = {
+        expiry: now + expiryMinutes * 60 * 1000, // minutes → ms
+      };
+      localStorage.setItem(storageKey, JSON.stringify(data));
+    } else {
+      const { expiry } = JSON.parse(item);
+
+      // if expired, remove it
+      if (now > expiry) {
+        localStorage.removeItem(storageKey);
+      } else {
+        return;
+      }
     }
   }, []);
+
 
   return (
     <div className="min-h-screen items-center justify-center px-10 py-10">
@@ -68,7 +89,7 @@ const LandingPage: React.FC = () => {
           onClick={openModal}
           className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-medium py-3 px-6 rounded-xl shadow-md transition-colors"
         >
-          Get Started
+          Get Started (Service Notice)
         </button>
       </div>
 

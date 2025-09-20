@@ -18,7 +18,7 @@ const Dashboard: React.FC = () => {
   const [jobApplications, setJobApplications] = useState<JobApplication[]>([]);
 
   const [emails, setEmails] = useState<EmailData[]>([]);
-  const [_, setSocket] = useState<Socket | null>(null);
+  const [, setSocket] = useState<Socket | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState('connecting');
 
@@ -122,6 +122,7 @@ const Dashboard: React.FC = () => {
       clearTimeout(fallbackTimeout);
       newSocket.disconnect();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
 
@@ -164,6 +165,7 @@ const Dashboard: React.FC = () => {
 
       setUser(response.data)
       toast.success("Filter created", { duration: 4000 });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("Error creating filter", { duration: 4000 });
     }
